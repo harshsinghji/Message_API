@@ -9,12 +9,17 @@ import qrcode from "qrcode-terminal";
 const app = express();
 app.use(express.json());
 
+// ✅ Add Puppeteer launch flags to fix "Running as root" error
 const client = new Client({
   authStrategy: new LocalAuth(),
+  puppeteer: {
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+  },
 });
 
-client.on("qr", qr => {
-  console.log("Scan this QR code to log in:");
+client.on("qr", (qr) => {
+  console.log("📱 Scan this QR code to log in:");
   qrcode.generate(qr, { small: true });
 });
 
